@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,8 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //map
-  // Map<String, dynamic> responseData = {};
 
   //fetch data from API
   Future<Map<String, dynamic>> fetchData() async {
@@ -36,12 +33,12 @@ class _HomePageState extends State<HomePage> {
       } else {
         // Handles errors
         debugPrint("Error: ${response.statusCode}");
-        return {}; // Return an empty map in case of an error
+        return {}; 
       }
     } catch (e) {
       // Handles exceptions
       debugPrint("Exception: $e");
-      return {}; // Return an empty map in case of an exception
+      return {}; 
     } finally {
       httpClient.close();
     }
@@ -55,6 +52,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    //Formats date from "2023-06-01T09:00:00+02:00" to "Wed, May 10 • 4:00 PM" format
     formatDateTime(String dateString) {
       DateTime dateTime = DateTime.parse(dateString);
       String formattedDate = DateFormat('E, MMM d • h:mm a').format(dateTime);
@@ -74,6 +73,7 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
                 onPressed: () {
+                  //Custom transition animation
                   slideRightTransition(context, const SearchPage());
                 },
                 icon: SvgPicture.asset("lib/assets/search1.svg")),
@@ -87,6 +87,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+        //Future builder to keep the data updated. Can also be achieved without it
         body: FutureBuilder(
           future: fetchData(),
           builder: (context, snapshot) {
@@ -100,10 +101,13 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                   itemCount: eventData!.length,
                   itemBuilder: (context, index) {
+
+                    //All the variables. We can also just pass id as parameter but when the user navigates
+                    //to the next page he will require to send another request to the API to fetch data. 
+                    //Hence to avoid multiple request I am passing all the required variables here itself
                     String imageUrl = eventData[index]['organiser_icon'];
                     String eventTitle = eventData[index]['title'];
                     int id = eventData[index]['id'];
-
                     String location =
                         '${eventData[index]['venue_name']} • ${eventData[index]['venue_city']}, ${eventData[index]['venue_country']}';
                     String dateTimeInfo =
@@ -120,6 +124,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             }
+
+            //Default return widget
             return const Center(
               child: CircularProgressIndicator(),
             );

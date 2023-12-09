@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tif_assignment/home.dart';
+import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,11 +13,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'TIF Assignment',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const HomePage());
+      title: 'TIF Assignment',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: primaryBlue),
+        useMaterial3: true,
+      ),
+      home: const HomePage(),
+    );
   }
 }

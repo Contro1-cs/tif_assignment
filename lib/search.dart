@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,6 +22,7 @@ class _SearchPageState extends State<SearchPage> {
   List<dynamic> allEvents = [];
   List<dynamic> searchResults = [];
 
+  //initially all events are displayed
   void fetchAllEvents() async {
     try {
       var url = Uri.parse(
@@ -46,6 +46,7 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  //API request for searched term
   void performSearch(String searchTerm) async {
     try {
       var url = Uri.parse(
@@ -67,18 +68,19 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  //Converts Date from "2023-06-01T09:00:00+02:00" to "1st  May- Sat -2:00 PM" format
   String formatDateTime(String dateTimeString) {
     DateTime dateTime = DateTime.parse(dateTimeString);
     String daySuffix = _getDaySuffix(dateTime.day);
     String formattedDate = DateFormat('d').format(dateTime);
-    String formattedmonth = DateFormat('MMM- E').format(dateTime);
+    String formattedmonth = DateFormat('MMM - E').format(dateTime);
     String formattedTime = DateFormat('h:mm a').format(dateTime);
-    String result =
-        '$formattedDate$daySuffix $formattedmonth  - $formattedTime';
+    String result = '$formattedDate$daySuffix $formattedmonth - $formattedTime';
 
     return result;
   }
 
+  //Sets suffix based on the date
   String _getDaySuffix(int day) {
     if (day >= 11 && day <= 13) {
       return 'th';
@@ -148,7 +150,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
 
-            //List view
+            //Events list
             Expanded(
               child: searchResults.isEmpty
                   ? Center(

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,9 +18,10 @@ class EventsDetails extends StatefulWidget {
 }
 
 class _EventsDetailsState extends State<EventsDetails> {
+  //bool
   bool _bookmark = false;
-  //fetch data from API
 
+  //fetch data from API
   Future<Map<String, dynamic>> fetchEventData() async {
     var url = Uri.parse(
         "https://sde-007.api.assignment.theinternetfolks.works/v1/event/${widget.id}");
@@ -50,6 +50,7 @@ class _EventsDetailsState extends State<EventsDetails> {
       }
     } catch (e) {
       // Handles exceptions
+      //Can also display some error screen
       print("Exception: $e");
     } finally {
       httpClient.close();
@@ -58,30 +59,27 @@ class _EventsDetailsState extends State<EventsDetails> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+        //Using future builder makes it easier to check if the snapshot is still loading and to check if the data is present or not
         body: FutureBuilder(
       future: fetchEventData(),
       builder: (context, snapshot) {
-        Map<String, dynamic> eventData = snapshot.data as Map<String, dynamic>;
-
-        //Data
-        String coverPhoto = eventData["banner_image"];
-        String title = eventData["title"];
-        String description = eventData["description"];
-        String organiserIcon = eventData["organiser_icon"];
-        String venueName = eventData["venue_name"];
-        String address =
-            "${eventData["venue_city"]}, ${eventData["venue_country"]}";
-        String orgName = eventData["organiser_name"];
-
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
+          Map<String, dynamic> eventData =
+              snapshot.data as Map<String, dynamic>;
+
+          //Data
+          String coverPhoto = eventData["banner_image"];
+          String title = eventData["title"];
+          String description = eventData["description"];
+          String organiserIcon = eventData["organiser_icon"];
+          String venueName = eventData["venue_name"];
+          String address =
+              "${eventData["venue_city"]}, ${eventData["venue_country"]}";
+          String orgName = eventData["organiser_name"];
           return Stack(
             children: [
               //Body
@@ -133,6 +131,7 @@ class _EventsDetailsState extends State<EventsDetails> {
                                 const Expanded(child: SizedBox()),
                                 IconButton(
                                   onPressed: () {
+                                    //Can send the id of the event to the backend database to save bookmarks in user's profile
                                     setState(() => _bookmark = !_bookmark);
                                   },
                                   icon: _bookmark
@@ -169,6 +168,7 @@ class _EventsDetailsState extends State<EventsDetails> {
                             ),
                           ),
                           const SizedBox(height: 19),
+                          //I like to keep the main Widget as clean as possible so that the code is maintainable and clean
                           organizerTile(organiserIcon, orgName),
                           const SizedBox(height: 19),
                           dateTimeTile(),
@@ -265,30 +265,31 @@ organizerTile(String organiserIcon, String orgName) {
     children: [
       //Icon
       Container(
-          height: 48,
-          width: 48,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.all(8),
-          child: organiserIcon.endsWith(".svg")
-              ? SvgPicture.network(
-                  organiserIcon,
-                  placeholderBuilder: (context) => const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 0.5,
-                    ),
+        height: 48,
+        width: 48,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: organiserIcon.endsWith(".svg")
+            ? SvgPicture.network(
+                organiserIcon,
+                placeholderBuilder: (context) => const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 0.5,
                   ),
-                )
-              : CachedNetworkImage(
-                  imageUrl: organiserIcon,
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.error_outline),
-                  progressIndicatorBuilder: (context, url, progress) =>
-                      const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )),
+                ),
+              )
+            : CachedNetworkImage(
+                imageUrl: organiserIcon,
+                errorWidget: (context, url, error) =>
+                    const Icon(Icons.error_outline),
+                progressIndicatorBuilder: (context, url, progress) =>
+                    const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+      ),
       const SizedBox(width: 10),
 
       Column(
@@ -312,6 +313,8 @@ organizerTile(String organiserIcon, String orgName) {
 }
 
 dateTimeTile() {
+  //Can use Google calendar's API to add the event in their phone's calendar
+  //Can add a button to recieve in app notifications for reminder
   return Row(
     children: [
       SvgPicture.asset("lib/assets/calendar.svg"),
@@ -343,6 +346,7 @@ dateTimeTile() {
 }
 
 locationTile(String venue, String address) {
+  //Can use Google Maps API to find the path from user's location to the event
   return Row(
     children: [
       SvgPicture.asset("lib/assets/location_icon.svg"),
@@ -352,7 +356,8 @@ locationTile(String venue, String address) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            venue,
+            venue.length <= 22 ? venue : "${venue.substring(0, 22)}...",
+            maxLines: 1,
             style: GoogleFonts.inter(
               color: typographyTitle,
               fontSize: 16,
