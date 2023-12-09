@@ -61,8 +61,11 @@ class EventTile extends StatelessWidget {
                   child: isSvg
                       ? SvgPicture.network(
                           imageUrl,
-                          placeholderBuilder: (context) =>
-                              const CircularProgressIndicator(),
+                          placeholderBuilder: (context) => const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 0.5,
+                            ),
+                          ),
                         )
                       : CachedNetworkImage(
                           imageUrl: imageUrl,

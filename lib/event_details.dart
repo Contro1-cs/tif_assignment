@@ -19,14 +19,12 @@ class EventsDetails extends StatefulWidget {
 }
 
 class _EventsDetailsState extends State<EventsDetails> {
-  Map<String, dynamic> eventData = {};
-
   bool _bookmark = false;
   //fetch data from API
 
-  void fetchEventData() async {
+  Future<Map<String, dynamic>> fetchEventData() async {
     var url = Uri.parse(
-        "https://sde-007.api.assignment.theinternetfolks.works/v1/event");
+        "https://sde-007.api.assignment.theinternetfolks.works/v1/event/${widget.id}");
     var httpClient = HttpClient();
 
     try {
@@ -40,14 +38,8 @@ class _EventsDetailsState extends State<EventsDetails> {
         // Check if the 'content' and 'data' keys exist in the JSON response
         if (jsonMap.containsKey('content') &&
             jsonMap['content'].containsKey('data')) {
-          List<dynamic> dataList = jsonMap['content']['data'];
-
-          setState(() {
-            eventData = dataList.firstWhere(
-              (item) => item['id'] == widget.id,
-              orElse: () => null,
-            );
-          });
+          Map<String, dynamic> dataList = jsonMap['content']['data'];
+          return dataList;
         } else {
           // Handle missing keys
           print("Error: Missing 'content' or 'data' keys in the JSON response");
@@ -62,197 +54,210 @@ class _EventsDetailsState extends State<EventsDetails> {
     } finally {
       httpClient.close();
     }
+    return {};
   }
 
   @override
   void initState() {
     super.initState();
-    fetchEventData();
   }
 
   @override
   Widget build(BuildContext context) {
-    //Data
-    String coverPhoto = eventData["banner_image"];
-    String title = eventData["title"];
-    String description = eventData["description"];
-    String organiserIcon = eventData["organiser_icon"];
-    String venueName = eventData["venue_name"];
-    String address =
-        "${eventData["venue_city"]}, ${eventData["venue_country"]}";
-    String orgName = eventData["organiser_name"];
-
     return Scaffold(
-      body: Stack(
-        children: [
-          //Body
-          SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //Cover
-                Stack(
+        body: FutureBuilder(
+      future: fetchEventData(),
+      builder: (context, snapshot) {
+        Map<String, dynamic> eventData = snapshot.data as Map<String, dynamic>;
+
+        //Data
+        String coverPhoto = eventData["banner_image"];
+        String title = eventData["title"];
+        String description = eventData["description"];
+        String organiserIcon = eventData["organiser_icon"];
+        String venueName = eventData["venue_name"];
+        String address =
+            "${eventData["venue_city"]}, ${eventData["venue_country"]}";
+        String orgName = eventData["organiser_name"];
+
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          return Stack(
+            children: [
+              //Body
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CachedNetworkImage(
-                      imageUrl: coverPhoto,
-                    ),
-                    Container(
-                      height: 150,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.black, Colors.transparent],
+                    //Cover
+                    Stack(
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl: coverPhoto,
                         ),
-                      ),
+                        Container(
+                          height: 150,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.black, Colors.transparent],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 8),
+                          child: SafeArea(
+                            child: Row(
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: const Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.white,
+                                    )),
+                                const SizedBox(width: 10),
+                                Text(
+                                  "Event Details",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 24,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const Expanded(child: SizedBox()),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() => _bookmark = !_bookmark);
+                                  },
+                                  icon: _bookmark
+                                      ? SvgPicture.asset(
+                                          "lib/assets/bookmark_filled.svg",
+                                          height: 40,
+                                          width: 40,
+                                        )
+                                      : SvgPicture.asset(
+                                          "lib/assets/bookmark_outlined.svg",
+                                          height: 40,
+                                          width: 40,
+                                        ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 10),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
-                      child: SafeArea(
-                        child: Row(
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.white,
-                                )),
-                            const SizedBox(width: 10),
-                            Text(
-                              widget.id.toString(),
-                              style: GoogleFonts.inter(
-                                fontSize: 24,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: GoogleFonts.inter(
+                              fontSize: 35,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
                             ),
-                            const Expanded(child: SizedBox()),
-                            IconButton(
-                              onPressed: () {
-                                setState(() => _bookmark = !_bookmark);
-                              },
-                              icon: _bookmark
-                                  ? SvgPicture.asset(
-                                      "lib/assets/bookmark_filled.svg",
-                                      height: 40,
-                                      width: 40,
-                                    )
-                                  : SvgPicture.asset(
-                                      "lib/assets/bookmark_outlined.svg",
-                                      height: 40,
-                                      width: 40,
-                                    ),
+                          ),
+                          const SizedBox(height: 19),
+                          organizerTile(organiserIcon, orgName),
+                          const SizedBox(height: 19),
+                          dateTimeTile(),
+                          const SizedBox(height: 19),
+                          locationTile(venueName, address),
+                          const SizedBox(height: 32),
+                          Text(
+                            "About Event",
+                            style: GoogleFonts.inter(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: typographyTitle,
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            description,
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              color: typographyTitle,
+                            ),
+                          ),
+                          const SizedBox(height: 120),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: GoogleFonts.inter(
-                          fontSize: 35,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 19),
-                      organizerTile(organiserIcon, orgName),
-                      const SizedBox(height: 19),
-                      dateTimeTile(),
-                      const SizedBox(height: 19),
-                      locationTile(venueName, address),
-                      const SizedBox(height: 32),
-                      Text(
-                        "About Event",
-                        style: GoogleFonts.inter(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: typographyTitle,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        description,
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          color: typographyTitle,
-                        ),
-                      ),
-                      const SizedBox(height: 120),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          //Book now button
-          Column(
-            children: [
-              const Expanded(child: SizedBox()),
+              ),
+              //Book now button
               Column(
                 children: [
-                  Container(
-                    height: 100,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [Colors.white, Colors.white10],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 60,
-                    // : const EdgeInsets.only(bottom: 15),
-                    padding: const EdgeInsets.fromLTRB(52, 0, 52, 10),
-                    color: Colors.white,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryBlue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                  const Expanded(child: SizedBox()),
+                  Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [Colors.white, Colors.white10],
+                          ),
                         ),
                       ),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(width: 25),
-                          Text(
-                            "BOOK NOW",
-                            style: GoogleFonts.inter(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
+                      Container(
+                        width: double.infinity,
+                        height: 60,
+                        // : const EdgeInsets.only(bottom: 15),
+                        padding: const EdgeInsets.fromLTRB(52, 0, 52, 10),
+                        color: Colors.white,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryBlue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
-                          SvgPicture.asset("lib/assets/arrow_forward.svg"),
-                        ],
+                          onPressed: () {},
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(width: 25),
+                              Text(
+                                "BOOK NOW",
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SvgPicture.asset("lib/assets/arrow_forward.svg"),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
             ],
-          ),
-        ],
-      ),
-    );
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    ));
   }
 }
 
@@ -261,21 +266,30 @@ organizerTile(String organiserIcon, String orgName) {
     children: [
       //Icon
       Container(
-        height: 48,
-        width: 48,
-        decoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.all(5),
-        child: CachedNetworkImage(
-          imageUrl: organiserIcon,
-          errorWidget: (context, url, error) => const Icon(Icons.error_outline),
-          progressIndicatorBuilder: (context, url, progress) => const Center(
-            child: CircularProgressIndicator(),
+          height: 48,
+          width: 48,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-      ),
+          padding: const EdgeInsets.all(8),
+          child: organiserIcon.endsWith(".svg")
+              ? SvgPicture.network(
+                  organiserIcon,
+                  placeholderBuilder: (context) => const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 0.5,
+                    ),
+                  ),
+                )
+              : CachedNetworkImage(
+                  imageUrl: organiserIcon,
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error_outline),
+                  progressIndicatorBuilder: (context, url, progress) =>
+                      const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )),
       const SizedBox(width: 10),
 
       Column(
