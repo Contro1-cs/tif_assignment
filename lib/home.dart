@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:tif_assignment/widgets/list_tiles.dart';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,11 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //bools
-  bool _error = false;
-
   //map
-  late Map<String, dynamic> responseData = {};
+  Map<String, dynamic> responseData = {};
 
   //fetch data from API
   void fetchData() async {
@@ -33,17 +29,17 @@ class _HomePageState extends State<HomePage> {
 
       if (response.statusCode == HttpStatus.ok) {
         var responseBody = await response.transform(utf8.decoder).join();
-        responseData = json.decode(responseBody);
+        setState(() {
+          responseData = json.decode(responseBody);
+        });
       } else {
         // Handles errors
-        print("Error: ${response.statusCode}");
-        setState(() {
-          _error = true;
-        });
+        debugPrint(
+            "Error: ${response.statusCode}###################################");
       }
     } catch (e) {
       //Handles exceptions
-      print("Exception: $e");
+      debugPrint("Exception: $e>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     } finally {
       httpClient.close();
     }
@@ -57,13 +53,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    List eventData = responseData['content']['data'];
+    List? eventData = responseData['content']['data'];
     formatDateTime(String dateString) {
       DateTime dateTime = DateTime.parse(dateString);
       String formattedDate = DateFormat('E, MMM d • h:mm a').format(dateTime);
       return formattedDate;
     }
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -97,10 +92,11 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: ListView.builder(
-          itemCount: eventData.length,
+          itemCount: eventData!.length,
           itemBuilder: (context, index) {
             String imageUrl = eventData[index]['organiser_icon'];
             String eventTitle = eventData[index]['title'];
+            int id = eventData[index]['id'];
 
             String location =
                 '${eventData[index]['venue_name']} • ${eventData[index]['venue_city']}, ${eventData[index]['venue_country']}';
@@ -113,6 +109,7 @@ class _HomePageState extends State<HomePage> {
               eventTitle: eventTitle,
               location: location,
               isSvg: isSvg,
+              id: id,
             );
           },
         ),
