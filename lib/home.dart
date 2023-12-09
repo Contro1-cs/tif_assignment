@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:tif_assignment/search.dart';
+import 'package:tif_assignment/widgets/colors.dart';
 import 'package:tif_assignment/widgets/list_tiles.dart';
 import 'package:tif_assignment/widgets/transitions.dart';
 
@@ -16,7 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   //fetch data from API
   Future<Map<String, dynamic>> fetchData() async {
     var url = Uri.parse(
@@ -33,12 +33,12 @@ class _HomePageState extends State<HomePage> {
       } else {
         // Handles errors
         debugPrint("Error: ${response.statusCode}");
-        return {}; 
+        return {};
       }
     } catch (e) {
       // Handles exceptions
       debugPrint("Exception: $e");
-      return {}; 
+      return {};
     } finally {
       httpClient.close();
     }
@@ -52,7 +52,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     //Formats date from "2023-06-01T09:00:00+02:00" to "Wed, May 10 • 4:00 PM" format
     formatDateTime(String dateString) {
       DateTime dateTime = DateTime.parse(dateString);
@@ -60,7 +59,71 @@ class _HomePageState extends State<HomePage> {
       return formattedDate;
     }
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldPop = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text(
+                'Want to exit the app?',
+                textAlign: TextAlign.center,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+              actionsAlignment: MainAxisAlignment.spaceEvenly,
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: primaryBlue)),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "No",
+                      style: GoogleFonts.inter(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: primaryBlue,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Yes",
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+        return shouldPop!;
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text(
@@ -101,9 +164,8 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                   itemCount: eventData!.length,
                   itemBuilder: (context, index) {
-
                     //All the variables. We can also just pass id as parameter but when the user navigates
-                    //to the next page he will require to send another request to the API to fetch data. 
+                    //to the next page he will require to send another request to the API to fetch data.
                     //Hence to avoid multiple request I am passing all the required variables here itself
                     String imageUrl = eventData[index]['organiser_icon'];
                     String eventTitle = eventData[index]['title'];
@@ -130,6 +192,8 @@ class _HomePageState extends State<HomePage> {
               child: CircularProgressIndicator(),
             );
           },
-        ));
+        ),
+      ),
+    );
   }
 }
