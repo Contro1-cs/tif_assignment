@@ -1,6 +1,6 @@
 # tif_assignment
 
-A new Flutter project.
+- This is my assignment submission as a part of my application for TIF
 
 ## Getting Started
 
@@ -8,9 +8,11 @@ This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [LinkedIn]([https://docs.flutter.dev/get-started/codelab](https://www.linkedin.com/in/aaditya-jagdale/))
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##Some of my notable work 
+- [MIT BUS App](https://play.google.com/store/apps/details?id=com.mitbusbuddy.mit_bus_app)
+  - This app is for MIT ADT Students and is estimated to be used by over +2000 students and faculty from the next academic calendar
+
+- I am also in progress to develop the Hostel app for MIT ADT University
+  - To be launched next academic year with over +3000 users estimated
