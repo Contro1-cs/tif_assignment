@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tif_assignment/widgets/colors.dart';
+import 'package:tif_assignment/widgets/date_format.dart';
 
 class EventsDetails extends StatefulWidget {
   const EventsDetails({
@@ -60,6 +61,8 @@ class _EventsDetailsState extends State<EventsDetails> {
 
   @override
   Widget build(BuildContext context) {
+    DateFormatter formatter = DateFormatter();
+
     return Scaffold(
 
         //Using future builder makes it easier to check if the snapshot is still loading and to check if the data is present or not
@@ -80,6 +83,8 @@ class _EventsDetailsState extends State<EventsDetails> {
           String address =
               "${eventData["venue_city"]}, ${eventData["venue_country"]}";
           String orgName = eventData["organiser_name"];
+          String eventDate = formatter.dayMonthYear(eventData["date_time"]);
+          String eventDayTime = formatter.dayTime(eventData["date_time"]);
           return Stack(
             children: [
               //Body
@@ -171,7 +176,7 @@ class _EventsDetailsState extends State<EventsDetails> {
                           //I like to keep the main Widget as clean as possible so that the code is maintainable and clean
                           organizerTile(organiserIcon, orgName),
                           const SizedBox(height: 19),
-                          dateTimeTile(),
+                          dateTimeTile(eventDate, eventDayTime),
                           const SizedBox(height: 19),
                           locationTile(venueName, address),
                           const SizedBox(height: 32),
@@ -312,7 +317,7 @@ organizerTile(String organiserIcon, String orgName) {
   );
 }
 
-dateTimeTile() {
+dateTimeTile(String date, String dayTime) {
   //Can use Google calendar's API to add the event in their phone's calendar
   //Can add a button to recieve in app notifications for reminder
   return Row(
@@ -324,7 +329,7 @@ dateTimeTile() {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "14 December, 2021",
+            date,
             style: GoogleFonts.inter(
               color: typographyTitle,
               fontSize: 16,
@@ -332,7 +337,7 @@ dateTimeTile() {
             ),
           ),
           Text(
-            "Tuesday, 4:00PM - 9:00PM",
+            dayTime,
             style: GoogleFonts.inter(
               color: typographySubColor,
               fontSize: 12,

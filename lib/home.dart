@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:tif_assignment/search.dart';
 import 'package:tif_assignment/widgets/colors.dart';
+import 'package:tif_assignment/widgets/date_format.dart';
 import 'package:tif_assignment/widgets/list_tiles.dart';
 import 'package:tif_assignment/widgets/transitions.dart';
 
@@ -53,11 +54,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     //Formats date from "2023-06-01T09:00:00+02:00" to "Wed, May 10 • 4:00 PM" format
-    formatDateTime(String dateString) {
-      DateTime dateTime = DateTime.parse(dateString);
-      String formattedDate = DateFormat('E, MMM d • h:mm a').format(dateTime);
-      return formattedDate;
-    }
+    DateFormatter formatter = DateFormatter();
 
     return WillPopScope(
       onWillPop: () async {
@@ -172,8 +169,8 @@ class _HomePageState extends State<HomePage> {
                     int id = eventData[index]['id'];
                     String location =
                         '${eventData[index]['venue_name']} • ${eventData[index]['venue_city']}, ${eventData[index]['venue_country']}';
-                    String dateTimeInfo =
-                        formatDateTime(eventData[index]['date_time']);
+                    String dateTimeInfo = formatter
+                        .homeTileDateTime(eventData[index]['date_time']);
 
                     return EventTile(
                       imageUrl: imageUrl,
