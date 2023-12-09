@@ -183,6 +183,21 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            // if (snapshot.data!.isEmpty) {
+            //   return const Center(
+            //     child: Text("No data found"),
+            //   );
+            // }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            }
 
             //Default return widget
             return const Center(
