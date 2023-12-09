@@ -251,11 +251,10 @@ class _EventsDetailsState extends State<EventsDetails> {
               ),
             ],
           );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
         }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     ));
   }

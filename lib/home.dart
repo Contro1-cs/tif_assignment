@@ -108,14 +108,12 @@ class _HomePageState extends State<HomePage> {
                         '${eventData[index]['venue_name']} • ${eventData[index]['venue_city']}, ${eventData[index]['venue_country']}';
                     String dateTimeInfo =
                         formatDateTime(eventData[index]['date_time']);
-                    bool isSvg = imageUrl.toLowerCase().endsWith('.svg');
 
                     return EventTile(
                       imageUrl: imageUrl,
                       dateTimeInfo: dateTimeInfo,
                       eventTitle: eventTitle,
                       location: location,
-                      isSvg: isSvg,
                       id: id,
                     );
                   },
