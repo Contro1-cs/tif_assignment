@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:tif_assignment/search.dart';
+import 'package:tif_assignment/assignment/search.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 import 'package:tif_assignment/widgets/date_format.dart';
 import 'package:tif_assignment/widgets/list_tiles.dart';

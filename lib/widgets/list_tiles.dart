@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tif_assignment/widgets/colors.dart';
-import 'package:tif_assignment/event_details.dart';
+import 'package:tif_assignment/assignment/event_details.dart';
 import 'package:tif_assignment/widgets/transitions.dart';
 
 class EventTile extends StatelessWidget {

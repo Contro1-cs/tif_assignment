@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tif_assignment/home.dart';
+import 'package:tif_assignment/practice/twitter_payment_fab.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryBlue),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const PaymentFab(),
     );
   }
 }
