@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tif_assignment/practice/twitter_payment_card.dart';
+import 'package:tif_assignment/practice/pricing_page.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryBlue),
         useMaterial3: true,
       ),
-      home: const AirBnbChecheckout(),
+      home: const PricingPage(),
     );
   }
 }
