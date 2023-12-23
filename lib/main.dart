@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tif_assignment/practice/pricing_page.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
   runApp(const MyApp());
 }
 
