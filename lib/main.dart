@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:tif_assignment/practice/pricing_page.dart';
+import 'package:tif_assignment/practice/bounce_loadaing.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryBlue),
         useMaterial3: true,
       ),
-      home: const PricingPage(),
+      home: const ISuck(),
     );
   }
 }
