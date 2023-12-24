@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AddBtnAnimation extends StatefulWidget {
-  const AddBtnAnimation({super.key});
+class ProgressIndicator extends StatefulWidget {
+  const ProgressIndicator({super.key});
 
   @override
-  State<AddBtnAnimation> createState() => _AddBtnAnimationState();
+  State<ProgressIndicator> createState() => _ProgressIndicatorState();
 }
 
-class _AddBtnAnimationState extends State<AddBtnAnimation> {
+class _ProgressIndicatorState extends State<ProgressIndicator> {
   int animationDuration = 400;
   double scaleVar = 0;
   bool toggle = true;
@@ -35,7 +35,7 @@ class _AddBtnAnimationState extends State<AddBtnAnimation> {
         } else {
           _randomValue = _random.nextInt(200);
           if (_randomValue % 2 == 0) {
-            scaleVar += 5;
+            scaleVar += 8;
           }
         }
       });
@@ -65,7 +65,7 @@ class _AddBtnAnimationState extends State<AddBtnAnimation> {
               child: Text(
                 toggle
                     ? 'Start Animation'
-                    : '${(scaleVar / 3).toString().split('.').first}% done',
+                    : '${min(100, (scaleVar / 3)).toString().split('.').first}% done',
                 style: GoogleFonts.inter(
                   color: Colors.grey,
                   fontWeight: FontWeight.w600,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tif_assignment/practice/add_btn_animation.dart';
+import 'package:tif_assignment/practice/gradient_bg.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryBlue),
         useMaterial3: true,
       ),
-      home: const AddBtnAnimation(),
+      home: const GradientBg(),
     );
   }
 }
