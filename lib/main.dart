@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tif_assignment/practice/gradient_bg.dart';
+import 'package:tif_assignment/practice/loading_animation_2.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryBlue),
         useMaterial3: true,
       ),
-      home: const GradientBg(),
+      home: const LoadingAnimation2(),
     );
   }
 }
