@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -13,20 +13,20 @@ class LoadingAnimation2 extends StatefulWidget {
 
 class _LoadingAnimation2State extends State<LoadingAnimation2> {
   List<bool> toggle = List.generate(50, (index) => false);
-  List<Color> colorList = [
-    Colors.green,
-    Colors.purple,
-    Colors.amber,
-  ];
 
   //Timer
-  int _randomValue = 0;
+  Timer? _timer;
+  int _timerValue = 0;
 
   void startTimer() {
-    Duration duration = const Duration(milliseconds: 400);
-    Timer.periodic(duration, (Timer timer) {
+    Duration duration = const Duration(milliseconds: 500);
+    _timer = Timer.periodic(duration, (Timer timer) {
       setState(() {
-        _randomValue = Random().nextInt(50);
+        if (_timerValue == 100) {
+          _timer?.cancel();
+        } else {
+          _timerValue += 1;
+        }
       });
     });
   }
@@ -38,47 +38,135 @@ class _LoadingAnimation2State extends State<LoadingAnimation2> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    List<int> frame1 = [
+      27,
+      28,
+      34,
+      37,
+      42,
+      45,
+      51,
+      52,
+      66,
+      67,
+      68,
+      69,
+      73,
+      78,
+      73,
+      78,
+      81,
+      86,
+      89,
+      94,
+    ];
+    List<int> frame2 = [
+      27,
+      28,
+      34,
+      37,
+      42,
+      45,
+      51,
+      52,
+      74,
+      75,
+      76,
+      77,
+      81,
+      86,
+      89,
+      94,
+    ];
+    List<int> frame3 = [
+      27,
+      28,
+      35,
+      36,
+      43,
+      44,
+      74,
+      75,
+      76,
+      77,
+      81,
+      86,
+      89,
+      94,
+    ];
+    List<List<int>> frames = [
+      frame1,
+      frame2,
+      frame3,
+      frame1,
+      frame1,
+      frame1,
+    ];
+
     return Scaffold(
       backgroundColor: Colors.black,
-      body: GestureDetector(
-        onTap: () => setState(() {
-          toggle[_randomValue] = true;
-        }),
-        child: GridView.builder(
-          itemCount: 50,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 5,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
-          ),
-          itemBuilder: (context, index) {
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              decoration: BoxDecoration(
-                color: _randomValue == index
-                    ? colorList[_randomValue % 3]
-                    : Colors.blue,
-                borderRadius:
-                    BorderRadius.circular(_randomValue == index ? 100 : 5),
-              ),
-            )
-                .animate(
-                  target: _randomValue == index ? 1 : 0,
-                  onComplete: (controller) => setState(() {
-                    controller.reverse();
-                    toggle[_randomValue] = false;
-                  }),
-                )
-                .scaleXY(
-                  begin: 0.1,
-                  end: 1,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.fastEaseInToSlowEaseOut,
-                );
-          },
+      body: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 8,
+          crossAxisSpacing: 5,
+          mainAxisSpacing: 5,
         ),
+        itemBuilder: (context, index) {
+          Color clr = Colors.white.withOpacity(0.3);
+          List currentFrame = frames[_timerValue % 6];
+          if (currentFrame.contains(index)) {
+            clr = const Color(0xffFF993A);
+          }
+          if (currentFrame.contains(index + 8) &&
+              !currentFrame.contains(index)) {
+            clr = const Color(0xffFF993A).withOpacity(0.5);
+          }
+          if (currentFrame.contains(index - 8) &&
+              !currentFrame.contains(index)) {
+            clr = const Color(0xffFF993A).withOpacity(0.5);
+          }
+          if (currentFrame.contains(index + 1) &&
+              !currentFrame.contains(index)) {
+            clr = const Color(0xffFF993A).withOpacity(0.5);
+          }
+          if (currentFrame.contains(index - 1) &&
+              !currentFrame.contains(index)) {
+            clr = const Color(0xffFF993A).withOpacity(0.5);
+          }
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 400),
+            decoration: BoxDecoration(
+              color: clr,
+              boxShadow: [
+                currentFrame.contains(index)
+                    ? BoxShadow(
+                        color: const Color(0xffFF993A).withOpacity(1),
+                        spreadRadius: 3,
+                        blurRadius: 15,
+                      )
+                    : const BoxShadow()
+              ],
+              borderRadius: BorderRadius.circular(100),
+            ),
+          )
+              .animate(
+                target: currentFrame.contains(index) ? 1 : 0,
+              )
+              .scaleXY(
+                begin: 0.1,
+                end: 0.4,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.fastEaseInToSlowEaseOut,
+              );
+        },
       ),
     );
   }
