@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tif_assignment/practice/loading_animation_2.dart';
+import 'package:tif_assignment/practice/car_dealership.dart';
 import 'package:tif_assignment/widgets/colors.dart';
 
 void main() {
@@ -18,10 +18,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TIF Assignment',
       theme: ThemeData(
+        fontFamily: 'Inter',
         colorScheme: ColorScheme.fromSeed(seedColor: primaryBlue),
         useMaterial3: true,
       ),
-      home: const LoadingAnimation2(),
+      home: const CarDealership(),
     );
   }
 }
